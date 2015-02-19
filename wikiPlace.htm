@@ -1,0 +1,296 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="images/favicon.ico">
+
+    <title>Wikiplace, Search any Place</title>
+
+    <!-- Bootstrap core CSS -->
+     <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.min.css" media="screen">
+
+    <!-- Custom styles for this template -->
+   <link href="css/starter-template.css" rel="stylesheet">
+
+    <!-- Bootstrap-map-js -->
+    <link rel="stylesheet" type="text/css" href="http://js.arcgis.com/3.10/js/esri/css/esri.css">   
+    <link rel="stylesheet" type="text/css" href="../bootstrap-map-js/src/css/bootstrapmap.css">  
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+  
+  
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          
+          <h3>WikiPlace</h3><h5>Search for any place</h5>
+        </div>
+         
+          
+        
+        <div class="collapse navbar-collapse  navbar-right">
+          <ul class="nav navbar-nav">
+         
+            <li class="active"><a href="wikiPlace.htm">Home</a></li>
+             
+            <li><a href="About.htm">About wikiPlace</a></li>
+            <li><a href="Contact.htm">Contact us</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+   
+    
+      <!-- Bootstrap-map-js -->
+    
+               <div id="mapDiv">
+                   <div class="row">
+                      <div class="col-lg-offset-4 col-lg-4 col-md-offset-4 col-md-4 col-sm-offset-4 col-sm-4  col-xs-12">
+                        
+                            <input type="text" class="form-control" id="place" placeholder="Enter any place"/>
+                        
+                      </div>
+                   <div class="col-lg-offset-10  col-lg-2 col-md-offset-10  col-md-2  col-sm-offset-9  col-sm-3 col-xs-offset-8 col-xs-4">
+                      <button id="but"type="button" class="btn btn-info" data-toggle="collapse" data-target="#sun">Switch Basemap</button>
+                          <div id="sun" class="collapse">
+                              <div id="basemapGallery"></div>
+                          </div>
+                   </div>
+                  
+                   
+                   </div>
+               </div>
+            
+      
+      
+
+    
+
+    <script type="text/javascript">
+        var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+        //The location.pathname.replace() logic below may look confusing but all its doing is
+        // enabling us to load the api from a CDN and load local modules from the correct location.
+        var dojoConfig = {
+            packages: [{
+                name: "application",
+                location: package_path + '/bootstrap-map-js/src/js'
+            }]
+        };
+    </script>
+    <script src="http://js.arcgis.com/3.10compact"></script>
+    
+    <script>
+        require(["application/bootstrapmap",
+                 "esri/dijit/Scalebar",
+                 "esri/tasks/locator",
+                 "esri/SpatialReference",
+                 "esri/graphic",
+                 "esri/symbols/SimpleLineSymbol",
+                 "esri/symbols/SimpleMarkerSymbol",
+                 "esri/symbols/Font",
+                 "esri/symbols/TextSymbol",
+                 "esri/geometry/Extent",
+                 "esri/geometry/webMercatorUtils",
+                 "dojo/_base/array",
+                 "esri/Color",
+                 "dojo/parser",
+                 "esri/dijit/BasemapGallery",
+        //"esri/dijit/HomeButton",
+                 "dojo/dom",
+                 "dojo/on",
+                 "dojo/domReady!"
+                 ],
+          function (BootstrapMap,
+                    Scalebar,
+                    Locator,
+                    SpatialReference,
+                    Graphic,
+                    SimpleLineSymbol,
+                    SimpleMarkerSymbol,
+                    Font,
+                    TextSymbol,
+                    Extent,
+                    webMercatorUtils,
+                    arrayUtils,
+                    Color,
+                    parser,
+                    BasemapGallery,
+          //HomeButton,
+                    dom,
+                    on) {
+
+              parser.parse();
+
+              // Get a reference to the ArcGIS Map class
+              var map = BootstrapMap.create("mapDiv", {
+                  basemap: "streets",
+                  center: [78.8718, 21.7679],
+                  zoom: 5,
+                  scrollWheelZoom: true,
+                  sliderOrientation: "horizontal",
+                  sliderPosition: "bottom-right",
+                  sliderStyle: "medium"
+              });
+              // scale bar
+              var scalebar = new Scalebar({
+                  map: map,
+                  scalebarUnit: "dual"
+              });
+              /*
+              var home = new HomeButton({
+              map: map
+              }, "HomeButton");
+              home.startup();
+              */
+              // base map
+              var basemapGallery = new BasemapGallery({
+                  showArcGISBasemaps: true,
+                  map: map
+              }, "basemapGallery");
+              basemapGallery.startup();
+              on(dom.byId("place"), "keypress", keyCode);
+              var place1, url, mplace1;
+              // locator class
+              locator = new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
+              locator.on("address-to-locations-complete", function (evt) {
+                  map.graphics.clear(); //  clearing the ploted points
+                  arrayUtils.forEach(evt.addresses, function (geocodeResult, index) {
+                      //random color for the text and marker symbol norma lrange 0-255
+                      var r = Math.floor(Math.random() * 250);
+                      var g = Math.floor(Math.random() * 100);
+                      var b = Math.floor(Math.random() * 100);
+
+                      var symbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE, 20, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([r, g, b, 0.5]), 10), new Color([r, g, b, 0.9])); // point symbol
+                      var pointMeters = webMercatorUtils.geographicToWebMercator(geocodeResult.location); // geting location
+                      var locationGraphic = new Graphic(pointMeters, symbol); // point ready
+
+                      var font = new Font().setSize("12pt").setWeight(Font.WEIGHT_BOLD); //font description 
+                      var textSymbol = new TextSymbol((index + 1) + ".) " + geocodeResult.address, font, new Color([r, g, b, 0.8])).setOffset(5, 15); // text symbol ready with font
+                      //add the location graphic and text with the address to the map 
+                      map.graphics.add(locationGraphic); // add point
+                      map.graphics.add(new Graphic(pointMeters, textSymbol)); // add fornt
+                  });
+                  var ptAttr = evt.addresses[0].attributes; // extracting extent
+                  var minx = parseFloat(ptAttr.Xmin);
+                  var maxx = parseFloat(ptAttr.Xmax);
+                  var miny = parseFloat(ptAttr.Ymin);
+                  var maxy = parseFloat(ptAttr.Ymax);
+
+                  var esriExtent = new Extent(minx, miny, maxx, maxy, new SpatialReference({ wkid: 4326 }));
+                  map.setExtent(webMercatorUtils.geographicToWebMercator(esriExtent)); // ploting extent
+              });
+
+
+              function locate(str) {
+                  var address = {
+                      SingleLine: str
+                  };
+                  var options = {
+                      address: address,
+                      outFields: ["*"]
+                  };
+
+                  locator.addressToLocations(options); // send request to locator class
+              }
+
+              // function for concersion ex. sri lanka will become Sri_Lanka
+              function ucFirstAllWords(str) {
+                  var pieces = str.split(" ");
+                  for (var i = 0; i < pieces.length; i++) {
+                      var j = pieces[i].charAt(0).toUpperCase();
+                      pieces[i] = j + pieces[i].substr(1);
+                  }
+                  return pieces.join("_");
+              }
+              // function for enter event
+              function keyCode(e) {
+                  if (e.keyCode == 13 || e.keyCode == "13") { // single word text ex. gurgaon
+                      place1 = document.getElementById("place").value;
+                      var n = place1.indexOf(" ");
+                      if (n == 0 || n == -1) {
+                          mplace1 = place1.charAt(0).toUpperCase() + place1.substr(1);
+                        //  alert(place1);
+                      }
+                      else {
+                          mplace1 = ucFirstAllWords(place1); // multiple word ex sir lanka
+                        //  alert(place1);
+                      }
+                      url = "http://en.wikipedia.org/w/api.php?action=parse&page=" + mplace1 + "&prop=text&format=json&section=0&callback=jsonCallback";
+                     // alert(url);
+
+                      // apending script file
+                      var script = document.createElement("script");
+                      script.setAttribute("src", url);
+                      script.setAttribute("type", "text/javascript");
+
+                      window.jsonCallback = function (jsonObj) {
+                          // use JSON object here
+                         // alert(jsonObj);
+                          var my_JSON_object = jsonObj;
+                          try {
+                              var title = my_JSON_object.parse.title;
+                          } catch (e) {
+                              // if spelling wrong
+                              alert("Search Not Sucessfull :\n- Not Correctly Spelled\n- You didn't search for a place\n\n Please Try Again. Happy Searching");
+                              return;
+                          }
+                          //alert(my_JSON_object.parse.title);
+                          var my_JSON_object_string = JSON.stringify(my_JSON_object); // json object to string
+                          
+
+                          var res = 0;
+                          var res = my_JSON_object_string.search(/latitude/i); // searching for latitude
+                          if (res == 0 || res == -1) {
+                              // other searches like tea or anything other than place coz latitude wont be involved
+                              alert("Search Not Sucessfull :\n- Not Correctly Spelled\n- You didn't search for a place\n\n Please Try Again. Happy Searching");
+                              return;
+                          }
+                          else {
+                             // alert("Search Sucessfull");
+                              locate(place1); // try locating
+                          }
+
+                      }
+                      // append the script in body
+                      document.body.appendChild(script);
+
+
+                  } else {
+                      if (e.keyCode == 37 || e.keyCode == "37" || e.keyCode == 39 || e.keyCode == "39") {
+                          return false;
+                      }
+                  }
+
+              }
+
+
+          });
+    </script>
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+   <script src="../bootstrap/dist/js/bootstrap.min.js"></script>
+  </body>
+</html>
