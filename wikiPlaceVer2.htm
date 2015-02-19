@@ -17,7 +17,7 @@
     <link href="css/starter-template.css" rel="stylesheet">
 
     <!-- Bootstrap-map-js -->
-    <link rel="stylesheet" type="text/css" href="http://js.arcgis.com/3.10/js/esri/css/esri.css">   
+     <link rel="stylesheet" href="http://js.arcgis.com/3.12/esri/css/esri.css">
     <link rel="stylesheet" type="text/css" href="../bootstrap-map-js/src/css/bootstrapmap.css">   
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -90,12 +90,12 @@
         var dojoConfig = {
             packages: [{
                 name: "application",
-                location: package_path + '/bootstrap-map-js/src/js'
+                location: package_path + '/../bootstrap-map-js/src/js'
             }]
         };
     </script>
-    <script src="http://js.arcgis.com/3.10compact"></script>
     
+    <script src="http://js.arcgis.com/3.12compact/"></script> 
     <script>
         require(["application/bootstrapmap",
                  "esri/dijit/Scalebar",
