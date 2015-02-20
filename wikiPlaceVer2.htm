@@ -102,7 +102,7 @@
                  "esri/tasks/locator",
                  "esri/SpatialReference",
                  "esri/graphic",
-                 //"esri/InfoTemplate",
+                 "esri/InfoTemplate",
                  //"dojo/dom-construct",
                  "esri/symbols/SimpleLineSymbol",
                  "esri/symbols/SimpleMarkerSymbol",
@@ -124,7 +124,7 @@
                     Locator,
                     SpatialReference,
                     Graphic,
-                   // InfoTemplate,
+                   InfoTemplate,
                    // domConstruct,
                     SimpleLineSymbol,
                     SimpleMarkerSymbol,
@@ -140,7 +140,7 @@
                     dom,
                     on) {
 
-//              parser.parse();
+                parser.parse();
 //              var infoWindow = new  InfoWindow({
 //                   domNode: domConstruct.create("div", null, dom.byId("mapDiv"))
 //              });
@@ -174,14 +174,16 @@
               }, "basemapGallery");
               basemapGallery.startup();
               on(dom.byId("place"), "keypress", keyCode);
-              var place1, url, mplace1;
-              var infobox = {}; 
+              var place1, strval,url, mplace1;
+              var infobox = {};
               var key = 0;
               // locator class
               locator = new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
               locator.on("address-to-locations-complete", function (evt) {
                   map.graphics.clear(); //  clearing the ploted points
-                  arrayUtils.forEach(evt.addresses, function (geocodeResult, index) {
+                  //arrayUtils.forEach(evt.addresses, function (geocodeResult, index) {
+                      var address=evt.addresses;
+                      var geocodeResult=address[0];
                       //random color for the text and marker symbol norma lrange 0-255
                       var r = Math.floor(Math.random() * 250);
                       var g = Math.floor(Math.random() * 100);
@@ -190,15 +192,17 @@
                       var symbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE, 20, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([r, g, b, 0.5]), 10), new Color([r, g, b, 0.9])); // point symbol
                       var pointMeters = webMercatorUtils.geographicToWebMercator(geocodeResult.location); // geting location
                      
-//                      var template = new InfoTemplate();
-//                      template.setTitle("Search Results");
-//                      template.setContent(infobox);
+                      var template = new InfoTemplate();
+                      template.setTitle("Search Results");
+                      var strval=getString(infobox);
+                      template.setContent(strval);
                      
                      
                       var locationGraphic = new Graphic(pointMeters, symbol); // point ready
+                      locationGraphic.setInfoTemplate(template);
 
                       var font = new Font().setSize("12pt").setWeight(Font.WEIGHT_BOLD); //font description 
-                      var textSymbol = new TextSymbol((index + 1) + ".) " + geocodeResult.address, font, new Color([r, g, b, 0.8])).setOffset(5, 15); // text symbol ready with font
+                      var textSymbol = new TextSymbol(geocodeResult.address, font, new Color([r, g, b, 0.8])).setOffset(5, 15); // text symbol ready with font
                       //add the location graphic and text with the address to the map 
 
 //                       map.infoWindow.setTitle("Coordinates");
@@ -209,7 +213,7 @@
                       map.graphics.add(locationGraphic); // add point
                       map.graphics.add(new Graphic(pointMeters, textSymbol)); // add fornt
                     
-                  });
+                 // });
                   var ptAttr = evt.addresses[0].attributes; // extracting extent
                   var minx = parseFloat(ptAttr.Xmin);
                   var maxx = parseFloat(ptAttr.Xmax);
@@ -220,6 +224,15 @@
                   map.setExtent(webMercatorUtils.geographicToWebMercator(esriExtent)); // ploting extent
               });
 
+              function getString(obj)
+              {
+                 var str="<table border='1'><tr>";
+                 arrayUtils.forEach(obj,function(key,value){
+                     str+=key+"</tr><td>"+value+"</td>";
+                 })
+                 str+="</table>"
+                 return str;
+              }
 
               function locate(str) {
                   var address = {
