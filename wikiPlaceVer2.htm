@@ -155,7 +155,8 @@
                   sliderPosition: "bottom-right",
                   sliderStyle: "medium"
               });
-              map.infoWindow.resize(200,125);
+            
+             // map.infoWindow.resize(250,100);
               // scale bar
               var scalebar = new Scalebar({
                   map: map,
@@ -195,8 +196,13 @@
                       var template = new InfoTemplate();
                       template.setTitle("Search Results");
                       var strval=getString(infobox);
-                      template.setContent(strval);
+                      template.setContent("hello");
                      
+                     map.infoWindow.setTitle("Results");
+                     map.infoWindow.setContent(strval);
+                     
+
+
                      
                       var locationGraphic = new Graphic(pointMeters, symbol); // point ready
                       locationGraphic.setInfoTemplate(template);
@@ -209,9 +215,11 @@
 //                       map.infoWindow.setContent(infobox);
 //                       map.infoWindow.show(pointMeters, map.getInfoWindowAnchor(evt.screenPoint));
 //                       map.infoWindow.resize(250,100);
+                      
 
                       map.graphics.add(locationGraphic); // add point
                       map.graphics.add(new Graphic(pointMeters, textSymbol)); // add fornt
+                     
                     
                  // });
                   var ptAttr = evt.addresses[0].attributes; // extracting extent
@@ -221,6 +229,7 @@
                   var maxy = parseFloat(ptAttr.Ymax);
 
                   var esriExtent = new Extent(minx, miny, maxx, maxy, new SpatialReference({ wkid: 4326 }));
+                   map.infoWindow.show(pointMeters,ptAttr);
                   map.setExtent(webMercatorUtils.geographicToWebMercator(esriExtent)); // ploting extent
               });
 
