@@ -103,7 +103,9 @@
                  "esri/SpatialReference",
                  "esri/graphic",
                  "esri/InfoTemplate",
-                 //"dojo/dom-construct",
+               // "dojo/dom-construct",
+               // "esri/dijit/Popup",
+               //  "esri/dijit/PopupTemplate",
                  "esri/symbols/SimpleLineSymbol",
                  "esri/symbols/SimpleMarkerSymbol",
                  "esri/symbols/Font",
@@ -124,8 +126,10 @@
                     Locator,
                     SpatialReference,
                     Graphic,
-                   InfoTemplate,
-                   // domConstruct,
+                    InfoTemplate,
+                 //  domConstruct,
+                 //   Popup, 
+                 //   PopupTemplate,
                     SimpleLineSymbol,
                     SimpleMarkerSymbol,
                     Font,
@@ -149,14 +153,15 @@
                   basemap: "streets",
                   center: [78.8718, 21.7679],
                   zoom: 5,
-                  //infoWindow: infoWindow,
+                 // infoWindow: popup,
                   scrollWheelZoom: false,
                   sliderOrientation: "horizontal",
                   sliderPosition: "bottom-right",
                   sliderStyle: "medium"
               });
             
-             //map.infoWindow.resize(250,100);
+             map.infoWindow.resize(400,250);
+           // map.infoWindow.resize();
               // scale bar
               var scalebar = new Scalebar({
                   map: map,
@@ -197,9 +202,21 @@
                       template.setTitle("Search Results");
                       var strval=getString(infobox);
                       template.setContent(strval);
+
+//                      var popTemplate = new PopupTemplate({
+//                           title: "Search Results",
+//                            description: strval
+//                      });
+//                      var popupOptions = {
+//            markerSymbol: new SimpleMarkerSymbol("circle", 32, null,
+//              new Color([0, 0, 0, 0.25])),
+//            marginLeft: "20",
+//            marginTop: "20"
+//          };
+                      //var popup = new Popup(popupOptions, domConstruct.create("div"));
                      
 //                     map.infoWindow.setTitle("Results");
-//                     map.infoWindow.setContent(strval);
+//                    map.infoWindow.setContent(strval);
                      
 
 
@@ -216,7 +233,7 @@
                       var textSymbol = new TextSymbol(geocodeResult.address, font, new Color([r, g, b, 0.8])).setOffset(5, 15); // text symbol ready with font
                       //add the location graphic and text with the address to the map 
 
-//                       map.infoWindow.setTitle("Coordinates");
+//                      map.infoWindow.setTitle("Coordinates");
 //                       map.infoWindow.setContent(infobox);
 //                       map.infoWindow.show(pointMeters, map.getInfoWindowAnchor(evt.screenPoint));
 //                       map.infoWindow.resize(250,100);
@@ -224,7 +241,12 @@
 
                       map.graphics.add(locationGraphic); // add point
                       map.graphics.add(new Graphic(pointMeters, textSymbol)); // add fornt
-                     
+                     locationGraphic.setInfoTemplate(template);
+                      map.infoWindow.setContent(locationGraphic.getContent());
+                      map.infoWindow.setTitle(locationGraphic.getTitle());
+                      map.infoWindow.anchor="right";
+                      
+                
                     
                  // });
                   var ptAttr = evt.addresses[0].attributes; // extracting extent
@@ -235,10 +257,9 @@
 
                   var esriExtent = new Extent(minx, miny, maxx, maxy, new SpatialReference({ wkid: 4326 }));
                   map.setExtent(webMercatorUtils.geographicToWebMercator(esriExtent)); // ploting extent
-                   locationGraphic.setInfoTemplate(template);
-                  map.infoWindow.setContent(locationGraphic.getContent());
-                      map.infoWindow.setTitle(locationGraphic.getTitle());
+                   
                   map.infoWindow.show(x);
+                  //map.setExtent(webMercatorUtils.geographicToWebMercator(esriExtent));
               });
 
               function getString(obj)
@@ -246,17 +267,17 @@
                
                 //var con=obj["content"];
                  //var i=0;
-                 var str="<table border='1'>";
+                 var str="<div class=\"container\"><table class=\"table table-hover\"><tbody>";
                  for(var i=0;i<obj["content"].length;i++){
                       var st=obj["content"][i];
                        //arrayUtils.forEach(st,function(key,value){
                       // str+=obj["content"].length;
-                           str+="<tr><td>"+obj["content"][i][0]+"</td><td>"+obj["content"][i][1]+"</td></tr>";
+                           str+="<tr><td>"+obj["content"][i][0]+"</td><td>: "+obj["content"][i][1]+"</td></tr>";
                               //  i++;
                      
                          //  });
                      }
-                 str+="</table>";
+                 str+="</tbody></table></div>";
                  return str;
               }
 
