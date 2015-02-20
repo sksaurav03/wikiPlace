@@ -375,6 +375,7 @@
                               infoboxContent = removeInternalTemplates(infoboxContent);
                               infoboxContent = removeInternalLinks(infoboxContent);
                               params = infoboxContent.split('|').slice(1);
+                              infobox={};
                               for (i = 0; i < params.length; ++i) {
                                       pair = params[i].split('=');
                                       infobox[pair[0].trim()] = pair[1].trim();
