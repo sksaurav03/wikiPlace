@@ -175,7 +175,7 @@
               basemapGallery.startup();
               on(dom.byId("place"), "keypress", keyCode);
               var place1, strval,url, mplace1;
-              var infobox = {};
+              var infobox = [];
               var key = 0;
               // locator class
               locator = new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
@@ -226,11 +226,20 @@
 
               function getString(obj)
               {
-                 var str="<table border='1'><tr>";
-                 arrayUtils.forEach(obj,function(key,value){
-                     str+=key+"</tr><td>"+value+"</td>";
-                 })
-                 str+="</table>"
+               
+                //var con=obj["content"];
+                 //var i=0;
+                 var str="<table border='1'>";
+                 for(var i=0;i<obj["content"].length;i++){
+                      var st=obj["content"][i];
+                       //arrayUtils.forEach(st,function(key,value){
+                      // str+=obj["content"].length;
+                           str+="<tr><td>"+obj["content"][i][0]+"</td><td>"+obj["content"][i][1]+"</td></tr>";
+                              //  i++;
+                     
+                         //  });
+                     }
+                 str+="</table>";
                  return str;
               }
 
@@ -375,13 +384,17 @@
                               infoboxContent = removeInternalTemplates(infoboxContent);
                               infoboxContent = removeInternalLinks(infoboxContent);
                               params = infoboxContent.split('|').slice(1);
-                              infobox={};
+                              infobox=[];
+                              infobox["content"]=[];
                               for (i = 0; i < params.length; ++i) {
                                       pair = params[i].split('=');
-                                      infobox[pair[0].trim()] = pair[1].trim();
+                                      infobox["content"][i]=[];
+                                      infobox["content"][i][0]=String(pair[0].trim());
+                                      infobox["content"][i][1]=String(pair[1].trim());
+                                      //infobox[pair[0].trim()] = pair[1].trim();
                                       }
-                               var result=JSON.stringify(infobox)
-                               alert(result);
+                               //var result=JSON.stringify(infobox)
+                               //alert(infobox);
 
 
                               locate(place1); // try locating
