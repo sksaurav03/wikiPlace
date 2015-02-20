@@ -156,7 +156,7 @@
                   sliderStyle: "medium"
               });
             
-             // map.infoWindow.resize(250,100);
+             //map.infoWindow.resize(250,100);
               // scale bar
               var scalebar = new Scalebar({
                   map: map,
@@ -196,16 +196,21 @@
                       var template = new InfoTemplate();
                       template.setTitle("Search Results");
                       var strval=getString(infobox);
-                      template.setContent("hello");
+                      template.setContent(strval);
                      
-                     map.infoWindow.setTitle("Results");
-                     map.infoWindow.setContent(strval);
+//                     map.infoWindow.setTitle("Results");
+//                     map.infoWindow.setContent(strval);
                      
 
 
                      
                       var locationGraphic = new Graphic(pointMeters, symbol); // point ready
-                      locationGraphic.setInfoTemplate(template);
+                     var x=locationGraphic.geometry;
+
+                     
+                     // map.infoWindow.show(pointMeters);
+
+
 
                       var font = new Font().setSize("12pt").setWeight(Font.WEIGHT_BOLD); //font description 
                       var textSymbol = new TextSymbol(geocodeResult.address, font, new Color([r, g, b, 0.8])).setOffset(5, 15); // text symbol ready with font
@@ -229,8 +234,11 @@
                   var maxy = parseFloat(ptAttr.Ymax);
 
                   var esriExtent = new Extent(minx, miny, maxx, maxy, new SpatialReference({ wkid: 4326 }));
-                   map.infoWindow.show(pointMeters,ptAttr);
                   map.setExtent(webMercatorUtils.geographicToWebMercator(esriExtent)); // ploting extent
+                   locationGraphic.setInfoTemplate(template);
+                  map.infoWindow.setContent(locationGraphic.getContent());
+                      map.infoWindow.setTitle(locationGraphic.getTitle());
+                  map.infoWindow.show(x);
               });
 
               function getString(obj)
@@ -387,7 +395,7 @@
                                       break;
                                  } // end if
                                } // end for
-                              alert(infoboxContent);
+                              //alert(infoboxContent);
 
                               var params, i, pair;
                               infoboxContent = removeInternalTemplates(infoboxContent);
