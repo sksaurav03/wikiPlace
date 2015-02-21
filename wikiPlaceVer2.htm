@@ -405,32 +405,7 @@
                              }
                           
 
-                          //////////////// Condition Method for extraction///////////////
-                          /*
-                          var my_JSON_object_string = JSON.stringify(my_JSON_object); // json object to string
-
-                          var x = my_JSON_object_string.indexOf("Infobox"); // starting condition
-                          alert(x);
-
-                          var x1 = my_JSON_object_string.charAt(x);
-                          alert(x1);
-
-                          var sPatt = mplace1.replace("_", " ");
-                          var cond = "'''" + sPatt + "'''";
-                          var y = my_JSON_object_string.indexOf(cond); // storping condition
-                          alert(y);
-
-                          var y1 = my_JSON_object_string.charAt(y);
-                          alert(y1);
-
-
-                          var sub = my_JSON_object_string.substring(x, y); ; // extracted string
-                          alert(sub);
-                          */
-                          //code for the text extracting goes here
-                          // alert(my_JSON_object_string);
-
-                          //////////////// Another Method for parsing infobox ///////////
+                        //////////////// Method for parsing infobox ///////////
 
                           var wholeContent = jsonObj.query.pages[key].revisions[0]['*']; // whole content extracted
                           var my_JSON_object_string = JSON.stringify(wholeContent);
@@ -458,7 +433,7 @@
                               //alert(infoboxContent);
 
                               var params, i, pair;
-                             
+                          // unexpected wiki content with }}}} type of symbols in their content   
                              var len=infoboxContent.length;
                              if(len<=500){
                                   infoboxContent= anotherMatchTemplate(wholeContent);
