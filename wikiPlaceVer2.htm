@@ -346,6 +346,7 @@
               function keyCode(e) {
                   if (e.keyCode == 13 || e.keyCode == "13") { // single word text ex. gurgaon
                       place1 = document.getElementById("place").value;
+                      place1=place1.toLowerCase(); 
                       var n = place1.indexOf(" ");
                       if (n == 0 || n == -1) {
                           mplace1 = place1.charAt(0).toUpperCase() + place1.substr(1);
