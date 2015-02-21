@@ -288,7 +288,9 @@
                  var str="<div class=\"container\"><table class=\"table table-hover\"><tbody>";
                  for(var i=0;i<obj["content"].length;i++){
                            var st=obj["content"][i];
-                           str+="<tr><td>"+obj["content"][i][0]+"</td><td>: "+obj["content"][i][1]+"</td></tr>";
+                           if(obj["content"][i][1]!=""){
+                                str+="<tr><td>"+obj["content"][i][0]+"</td><td>: "+obj["content"][i][1]+"</td></tr>";
+                           }
                   }
                  str+="</tbody></table></div>";
                  return str;
