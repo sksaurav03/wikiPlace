@@ -98,62 +98,82 @@
     <script src="http://js.arcgis.com/3.12compact/"></script> 
     <script>
         require(["application/bootstrapmap",
+                 
                  "esri/dijit/Scalebar",
+                 
                  "esri/tasks/locator",
                  "esri/SpatialReference",
+                 
                  "esri/graphic",
+                 
                  "esri/InfoTemplate",
-               // "dojo/dom-construct",
-               // "esri/dijit/Popup",
-               //  "esri/dijit/PopupTemplate",
+              // "dojo/dom-construct",
+              // "esri/dijit/Popup",
+              // "esri/dijit/PopupTemplate",
+                 
                  "esri/symbols/SimpleLineSymbol",
                  "esri/symbols/SimpleMarkerSymbol",
                  "esri/symbols/Font",
                  "esri/symbols/TextSymbol",
+                 
                  "esri/geometry/Extent",
                  "esri/geometry/webMercatorUtils",
+                 
                  "dojo/_base/array",
+                 
                  "esri/Color",
+                 
                  "dojo/parser",
+                 
                  "esri/dijit/BasemapGallery",
-        //"esri/dijit/HomeButton",
+               //"esri/dijit/HomeButton",
+                 
                  "dojo/dom",
                  "dojo/on",
                  "dojo/domReady!"
                  ],
           function (BootstrapMap,
+                    
                     Scalebar,
+                    
                     Locator,
                     SpatialReference,
+                    
                     Graphic,
+                    
                     InfoTemplate,
-                 //  domConstruct,
-                 //   Popup, 
-                 //   PopupTemplate,
+                 // domConstruct,
+                 // Popup, 
+                 // PopupTemplate,
+                    
                     SimpleLineSymbol,
                     SimpleMarkerSymbol,
                     Font,
                     TextSymbol,
+                    
                     Extent,
                     webMercatorUtils,
+                    
                     arrayUtils,
+                    
                     Color,
+                    
                     parser,
+                    
                     BasemapGallery,
-          //HomeButton,
+                  //HomeButton,
+                  
                     dom,
                     on) {
 
                 parser.parse();
-//              var infoWindow = new  InfoWindow({
-//                   domNode: domConstruct.create("div", null, dom.byId("mapDiv"))
-//              });
+
               // Get a reference to the ArcGIS Map class
               var map = BootstrapMap.create("mapDiv", {
                   basemap: "streets",
                   center: [78.8718, 21.7679],
                   zoom: 5,
-                 // infoWindow: popup,
+               // infoWindow: popup,
                   scrollWheelZoom: false,
                   sliderOrientation: "horizontal",
                   sliderPosition: "bottom-right",
@@ -161,36 +181,41 @@
               });
             
              map.infoWindow.resize(400,250);
-           // map.infoWindow.resize();
-              // scale bar
-              var scalebar = new Scalebar({
+             
+             var scalebar = new Scalebar({
                   map: map,
                   scalebarUnit: "dual"
               });
+             
               /*
               var home = new HomeButton({
               map: map
               }, "HomeButton");
               home.startup();
               */
+             
               // base map
               var basemapGallery = new BasemapGallery({
                   showArcGISBasemaps: true,
                   map: map
               }, "basemapGallery");
               basemapGallery.startup();
+             
               on(dom.byId("place"), "keypress", keyCode);
+             
               var place1, strval,url, mplace1;
               var infobox = [];
               var key = 0;
+             
               // locator class
               locator = new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
               locator.on("address-to-locations-complete", function (evt) {
-                  map.graphics.clear(); //  clearing the ploted points
-                  //arrayUtils.forEach(evt.addresses, function (geocodeResult, index) {
+                      map.graphics.clear(); //  clearing the ploted points
+                    //arrayUtils.forEach(evt.addresses, function (geocodeResult, index) {
                       var address=evt.addresses;
                       var geocodeResult=address[0];
-                      //random color for the text and marker symbol norma lrange 0-255
+                  
+                    //random color for the text and marker symbol norma lrange 0-255
                       var r = Math.floor(Math.random() * 250);
                       var g = Math.floor(Math.random() * 100);
                       var b = Math.floor(Math.random() * 100);
@@ -203,84 +228,73 @@
                       var strval=getString(infobox);
                       template.setContent(strval);
 
-//                      var popTemplate = new PopupTemplate({
+//                    var popTemplate = new PopupTemplate({
 //                           title: "Search Results",
-//                            description: strval
-//                      });
-//                      var popupOptions = {
-//            markerSymbol: new SimpleMarkerSymbol("circle", 32, null,
-//              new Color([0, 0, 0, 0.25])),
-//            marginLeft: "20",
-//            marginTop: "20"
-//          };
-                      //var popup = new Popup(popupOptions, domConstruct.create("div"));
-                     
-//                     map.infoWindow.setTitle("Results");
-//                    map.infoWindow.setContent(strval);
-                     
+//                           description: strval
+//                    });
+//                    var popupOptions = {
+//                    markerSymbol: new SimpleMarkerSymbol("circle", 32, null,
+//                                                          new Color([0, 0, 0, 0.25])),
+//                                                          marginLeft: "20",
+//                                                          marginTop: "20"
+//                                        };
+//                    var popup = new Popup(popupOptions, domConstruct.create("div"));         
 
 
-                     
                       var locationGraphic = new Graphic(pointMeters, symbol); // point ready
-                     var x=locationGraphic.geometry;
+                      var x=locationGraphic.geometry;
 
                      
-                     // map.infoWindow.show(pointMeters);
+                 
 
 
 
                       var font = new Font().setSize("12pt").setWeight(Font.WEIGHT_BOLD); //font description 
                       var textSymbol = new TextSymbol(geocodeResult.address, font, new Color([r, g, b, 0.8])).setOffset(5, 15); // text symbol ready with font
-                      //add the location graphic and text with the address to the map 
-
-//                      map.infoWindow.setTitle("Coordinates");
-//                       map.infoWindow.setContent(infobox);
-//                       map.infoWindow.show(pointMeters, map.getInfoWindowAnchor(evt.screenPoint));
-//                       map.infoWindow.resize(250,100);
                       
-
+                      
+                      //add the location graphic and text with the address to the map 
+                      
                       map.graphics.add(locationGraphic); // add point
                       map.graphics.add(new Graphic(pointMeters, textSymbol)); // add fornt
-                     locationGraphic.setInfoTemplate(template);
+                      
+                      locationGraphic.setInfoTemplate(template);
+                     
                       map.infoWindow.setContent(locationGraphic.getContent());
                       map.infoWindow.setTitle(locationGraphic.getTitle());
                       map.infoWindow.anchor="right";
                       
                 
                     
-                 // });
-                  var ptAttr = evt.addresses[0].attributes; // extracting extent
-                  var minx = parseFloat(ptAttr.Xmin);
-                  var maxx = parseFloat(ptAttr.Xmax);
-                  var miny = parseFloat(ptAttr.Ymin);
-                  var maxy = parseFloat(ptAttr.Ymax);
+            // });
+                  
+                      var ptAttr = evt.addresses[0].attributes; // extracting extent
+                      var minx = parseFloat(ptAttr.Xmin);
+                      var maxx = parseFloat(ptAttr.Xmax);
+                      var miny = parseFloat(ptAttr.Ymin);
+                      var maxy = parseFloat(ptAttr.Ymax);
 
-                  var esriExtent = new Extent(minx, miny, maxx, maxy, new SpatialReference({ wkid: 4326 }));
-                  map.setExtent(webMercatorUtils.geographicToWebMercator(esriExtent)); // ploting extent
+                      var esriExtent = new Extent(minx, miny, maxx, maxy, new SpatialReference({ wkid: 4326 }));
+                      map.setExtent(webMercatorUtils.geographicToWebMercator(esriExtent)); // ploting extent
                    
-                  map.infoWindow.show(x);
-                  //map.setExtent(webMercatorUtils.geographicToWebMercator(esriExtent));
+                      map.infoWindow.show(x);
+                  
               });
+
+              // Preparing content for the infowindow
 
               function getString(obj)
               {
-               
-                //var con=obj["content"];
-                 //var i=0;
                  var str="<div class=\"container\"><table class=\"table table-hover\"><tbody>";
                  for(var i=0;i<obj["content"].length;i++){
-                      var st=obj["content"][i];
-                       //arrayUtils.forEach(st,function(key,value){
-                      // str+=obj["content"].length;
+                           var st=obj["content"][i];
                            str+="<tr><td>"+obj["content"][i][0]+"</td><td>: "+obj["content"][i][1]+"</td></tr>";
-                              //  i++;
-                     
-                         //  });
-                     }
+                  }
                  str+="</tbody></table></div>";
                  return str;
               }
 
+              // calling the feature layer for the address service
               function locate(str) {
                   var address = {
                       SingleLine: str
@@ -302,10 +316,12 @@
                   }
                   return pieces.join("_");
               }
+             
               // grouping wiki content
               function matchTemplates (wikiContent) {
                               return wikiContent.match(/{{[^]*?({{[^{}]*?}}[^]*?)*}}/g) || [];
               }
+              
               // removing interna template
               function removeInternalTemplates(template) {
                     template = template.replace(/^{{|}}$/g, '');
@@ -316,6 +332,7 @@
                           }
                     return template;
                }
+               
                // removing internal links
                function removeInternalLinks(template) {
                      var links = template.match(/\[\[([^\]]*)\]\]/g) || [];
@@ -324,7 +341,6 @@
                      }
                      return template;
                  }
-
 
               // function for enter event
               function keyCode(e) {
@@ -339,6 +355,7 @@
                           mplace1 = ucFirstAllWords(place1); // multiple word ex sir lanka
                           // alert(place1);
                       }
+                     
                       url = "http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&format=json&titles=" + mplace1 + "&rvsection=0&callback=jsonCallback";
                       //alert(url);
 
@@ -350,23 +367,21 @@
                       window.jsonCallback = function (jsonObj) {
                           // use JSON object here
                           //alert(jsonObj);
-                          //var my_JSON_object = jsonObj;
                           try {
-
-                              for (var i in jsonObj.query.pages) {
+                                 for (var i in jsonObj.query.pages) {
                                   key = i;
-                              }
-                              //alert(key);
-                              if(key==-1)
-                              {
-                                throw "page doesn't exist";
-                              }
-                          } catch (e) {
+                                  }
+                                 //alert(key);
+                                  if(key==-1)
+                                      {
+                                          throw "page doesn't exist";
+                                      }
+                           } catch (e) {
                               // if spelling wrong
                               alert("Search Not Sucessfull :\n- Not Correctly Spelled\n- You didn't search for a place\n\n Please Try Again. Happy Searching");
                               return;
-                          }
-                          //alert(my_JSON_object.parse.title);
+                             }
+                          
 
                           //////////////// Condition Method for extraction///////////////
                           /*
@@ -401,41 +416,43 @@
                           var res = 0;
                           var res = my_JSON_object_string.search(/lat/i); // searching for latitude
                           //alert(res);
+                         
                           if (res == 0 || res == -1) {
                               // other searches like tea or anything other than place coz latitude wont be involved
                               alert("Search Not Sucessfull :\n- Not Correctly Spelled\n- You didn't search for a place\n\n Please Try Again. Happy Searching");
                               return;
-                          }
-                          else {
+                          }else {
                               //alert("Search Sucessfull");
+                           
                               var v = matchTemplates(wholeContent), infoboxContent, re;
                               for(i=0; i< v.length; i++) {
-                                re = new RegExp("Infobox", 'i');
-                                if(v[i].match(re)) {
-                                      infoboxContent = v[i];
-                                      break;
-                                 } // end if
+                                     re = new RegExp("Infobox", 'i');
+                                     if(v[i].match(re)) {
+                                           infoboxContent = v[i];
+                                            break;
+                                      } // end if
                                } // end for
                               //alert(infoboxContent);
 
                               var params, i, pair;
+                             
                               infoboxContent = removeInternalTemplates(infoboxContent);
                               infoboxContent = removeInternalLinks(infoboxContent);
+                              
                               params = infoboxContent.split('|').slice(1);
                               infobox=[];
                               infobox["content"]=[];
+                              
                               for (i = 0; i < params.length; ++i) {
                                       pair = params[i].split('=');
                                       infobox["content"][i]=[];
                                       infobox["content"][i][0]=String(pair[0].trim());
                                       infobox["content"][i][1]=String(pair[1].trim());
-                                      //infobox[pair[0].trim()] = pair[1].trim();
-                                      }
-                               //var result=JSON.stringify(infobox)
+                               }
+                           
                                //alert(infobox);
-
-
-                              locate(place1); // try locating
+                               
+                               locate(place1); // try locating
                           }
 
                       }
@@ -450,10 +467,8 @@
                   }
 
               }
-
-
           });
-    </script>
+</script>
 
 
 
