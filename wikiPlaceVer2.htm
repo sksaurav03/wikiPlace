@@ -203,9 +203,11 @@
              
               on(dom.byId("place"), "keypress", keyCode);
              
-              var place1, strval,url, mplace1;
+              var place1, strval,url, mplace1,urlAllLinks;
+              var urlImg;
               var infobox = [];
               var key = 0;
+              var srcImg=[];
              
               // locator class
               locator = new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
@@ -278,9 +280,49 @@
                       map.setExtent(webMercatorUtils.geographicToWebMercator(esriExtent)); // ploting extent
                    
                       map.infoWindow.show(x);
-                  
+                      urlAllLinks="http://en.wikipedia.org/w/api.php?action=query&titles="+mplace1+"&prop=images&format=json&imlimit=25&callback=imagesJsonCallback";
+                      
+                      // Script file for calling the api
+                      
+                      var script = document.createElement("script");
+                      
+                      script.setAttribute("src", urlAllLinks);
+                      script.setAttribute("type", "text/javascript");
+                      
+                             //imagesJsonCallback function for the processing of images extracted
+                             window.imagesJsonCallback = function (jsonObj) {
+                                    var wholeImages = jsonObj.query.pages[key].images;
+
+                                    for(var i=0;i<wholeImages.length;i++)
+                                    {
+                                       urlImg="http://en.wikipedia.org/w/api.php?action=query&titles="+wholeImages[i].title+"+&prop=imageinfo&iiprop=url&format=json&callback=linkOfImage";
+                                       srcImg[i]=getLink(urlImg);
+
+                                    }
+                                    
+                             }
+
+                      document.body.appendChild(script);
+
+                      
               });
 
+              function getLink(img){
+                             var scripta;
+                             var srcIm;
+                             scripta = document.createElement("script");
+                             scripta.setAttribute("src", img);
+                             scripta.setAttribute("type", "text/javascript");
+                                       
+                             window.linkOfImage = function (obj) {
+                                      srcIm =obj.query.pages["-1"].imageinfo[0];
+                                      return srcIm;
+                             }
+                             document.body.appendChild(scripta);
+                       }
+                       
+              
+              
               // Preparing content for the infowindow
 
               function getString(obj)
