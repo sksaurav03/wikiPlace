@@ -318,9 +318,12 @@
                   if(ind==urlImg.length)
                   {
                      alert(srcImg);
+                     document.body.removeChild(scripta);
                      return;
                   }
-                  
+                  if(ind!=0){
+                      document.body.removeChild(scripta);
+                  }
                              var img;
                            // for(var i=0;i<urlImg.length;i++){
                                  img=arr[ind];
@@ -331,9 +334,11 @@
                                         getLink(urlImg,ind);
                                 };
                                      window.linkOfImage = function (obj) {
-                                        for (var i in obj.query.pages) {
-                                                  key2 = i;
-                                        }
+                                         
+                                                for (var i in obj.query.pages) {
+                                                     key2 = i;
+                                                }
+                                        
                                        srcImg[ind] =obj.query.pages[key2].imageinfo[0].url;
                                        ind++;
                                         
@@ -341,7 +346,8 @@
                                 document.body.appendChild(scripta);
                                 
                                  //genScript(img,i);
-                       //  }         //end for      
+                       //  }         //end for
+                             
             }  // function end
 //              function genScript(img,i)
 //              {
