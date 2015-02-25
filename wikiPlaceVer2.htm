@@ -204,7 +204,7 @@
               on(dom.byId("place"), "keypress", keyCode);
              
               var place1, strval,url, mplace1,urlAllLinks;
-              var urlImg;
+              var urlImg=[];
               var infobox = [];
               var key = 0;
               var srcImg=[];
@@ -283,7 +283,8 @@
                       urlAllLinks="http://en.wikipedia.org/w/api.php?action=query&titles="+mplace1+"&prop=images&format=json&imlimit=25&callback=imagesJsonCallback";
                       
                       // Script file for calling the api
-                      
+                      var ano=1;
+                      var wholeImages={};
                       var script = document.createElement("script");
                       
                       script.setAttribute("src", urlAllLinks);
@@ -291,35 +292,47 @@
                       
                              //imagesJsonCallback function for the processing of images extracted
                              window.imagesJsonCallback = function (jsonObj) {
-                                    var wholeImages = jsonObj.query.pages[key].images;
-
+                                    wholeImages = jsonObj.query.pages[key].images;
+                                    //var temp;
+                                    ano=0;
                                     for(var i=0;i<wholeImages.length;i++)
                                     {
-                                       urlImg="http://en.wikipedia.org/w/api.php?action=query&titles="+wholeImages[i].title+"+&prop=imageinfo&iiprop=url&format=json&callback=linkOfImage";
-                                       srcImg[i]=getLink(urlImg);
-
-                                    }
-                                    
-                             }
-
+                                       ano++;
+                                       urlImg[i]="http://en.wikipedia.org/w/api.php?action=query&titles="+wholeImages[i].title+"+&prop=imageinfo&iiprop=url&format=json&callback=imJsonCallback";
+                                       //temp=getLink(urlImg);
+                                       //srcImg[i]=temp;
+                                       
+                                   }
+                                
+                            }
+                        if(ano==wholeImages.length)
+                                  {
+                                     var x=getLink(urlImg);
+                                  }
                       document.body.appendChild(script);
-
+                       //getLink(urlImg);
+                       
                       
               });
 
               function getLink(img){
-                             var scripta;
-                             var srcIm;
-                             scripta = document.createElement("script");
-                             scripta.setAttribute("src", img);
-                             scripta.setAttribute("type", "text/javascript");
-                                       
-                             window.linkOfImage = function (obj) {
-                                      srcIm =obj.query.pages["-1"].imageinfo[0];
-                                      return srcIm;
-                             }
-                             document.body.appendChild(scripta);
-                       }
+                                                  var scripta;
+                                                  var srcIm=[];
+                                                  var temp;
+                                                  for(var i=0;i<img.length;i++){
+                                                     temp=img[i];
+                                                     scripta = document.createElement("script");
+                                                     scripta.setAttribute("src", temp);
+                                                     scripta.setAttribute("type", "text/javascript");
+                                        
+                                                    window.imJsonCallback=function (obj) {
+                                                    
+                                                         srcIm[i] =obj.query.pages["-1"].imageinfo[0];
+                                                         //return srcIm;
+                                                     }
+                                                     document.body.appendChild(scripta);
+                                                  }
+                                      }
                        
               
               
@@ -349,6 +362,7 @@
                   };
 
                   locator.addressToLocations(options); // send request to locator class
+                  //alert("hi");
               }
 
               // function for concersion ex. sri lanka will become Sri_Lanka
@@ -507,6 +521,7 @@
                                //alert(infobox);
                                
                                locate(place1); // try locating
+                               
                           }
 
                       }
