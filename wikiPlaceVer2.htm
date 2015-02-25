@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -165,9 +165,7 @@
                   
                     dom,
                     on) {
-
                 parser.parse();
-
               // Get a reference to the ArcGIS Map class
               var map = BootstrapMap.create("mapDiv", {
                   basemap: "streets",
@@ -211,6 +209,7 @@
               var srcImg=[];
               var scripta;
               var ctr=0;
+              var x=0;
              
               // locator class
               locator = new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
@@ -224,7 +223,6 @@
                       var r = Math.floor(Math.random() * 250);
                       var g = Math.floor(Math.random() * 100);
                       var b = Math.floor(Math.random() * 100);
-
                       var symbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE, 20, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([r, g, b, 0.5]), 10), new Color([r, g, b, 0.9])); // point symbol
                       var pointMeters = webMercatorUtils.geographicToWebMercator(geocodeResult.location); // geting location
                      
@@ -232,7 +230,6 @@
                       template.setTitle("Search Results");
                       var strval=getString(infobox);
                       template.setContent(strval);
-
 //                    var popTemplate = new PopupTemplate({
 //                           title: "Search Results",
 //                           description: strval
@@ -244,16 +241,10 @@
 //                                                          marginTop: "20"
 //                                        };
 //                    var popup = new Popup(popupOptions, domConstruct.create("div"));         
-
-
                       var locationGraphic = new Graphic(pointMeters, symbol); // point ready
                       var x=locationGraphic.geometry;
-
                      
                  
-
-
-
                       var font = new Font().setSize("12pt").setWeight(Font.WEIGHT_BOLD); //font description 
                       var textSymbol = new TextSymbol(geocodeResult.address, font, new Color([r, g, b, 0.8])).setOffset(5, 15); // text symbol ready with font
                       
@@ -278,7 +269,6 @@
                       var maxx = parseFloat(ptAttr.Xmax);
                       var miny = parseFloat(ptAttr.Ymin);
                       var maxy = parseFloat(ptAttr.Ymax);
-
                       var esriExtent = new Extent(minx, miny, maxx, maxy, new SpatialReference({ wkid: 4326 }));
                       map.setExtent(webMercatorUtils.geographicToWebMercator(esriExtent)); // ploting extent
                    
@@ -286,61 +276,15 @@
                       urlAllLinks="http://en.wikipedia.org/w/api.php?action=query&titles="+mplace1+"&prop=images&format=json&imlimit=25&callback=imagesJsonCallback";
                       
                       // Script file for calling the api
-                      var ano=1;
-                      var wholeImages={};
+                      
                       var script = document.createElement("script");
                       
                       script.setAttribute("src", urlAllLinks);
                       script.setAttribute("type", "text/javascript");
                       
-
                                
-
                              //imagesJsonCallback function for the processing of images extracted
                              window.imagesJsonCallback = function (jsonObj) {
-<<<<<<< HEAD
-                                    wholeImages = jsonObj.query.pages[key].images;
-                                    //var temp;
-                                    ano=0;
-                                    for(var i=0;i<wholeImages.length;i++)
-                                    {
-                                       ano++;
-                                       urlImg[i]="http://en.wikipedia.org/w/api.php?action=query&titles="+wholeImages[i].title+"+&prop=imageinfo&iiprop=url&format=json&callback=imJsonCallback";
-                                       //temp=getLink(urlImg);
-                                       //srcImg[i]=temp;
-                                       
-                                   }
-                                
-                            }
-                        if(ano==wholeImages.length)
-                                  {
-                                     var x=getLink(urlImg);
-                                  }
-                      document.body.appendChild(script);
-                       //getLink(urlImg);
-                       
-                      
-              });
-
-              function getLink(img){
-                                                  var scripta;
-                                                  var srcIm=[];
-                                                  var temp;
-                                                  for(var i=0;i<img.length;i++){
-                                                     temp=img[i];
-                                                     scripta = document.createElement("script");
-                                                     scripta.setAttribute("src", temp);
-                                                     scripta.setAttribute("type", "text/javascript");
-                                        
-                                                    window.imJsonCallback=function (obj) {
-                                                    
-                                                         srcIm[i] =obj.query.pages["-1"].imageinfo[0];
-                                                         //return srcIm;
-                                                     }
-                                                     document.body.appendChild(scripta);
-                                                  }
-                                      }
-=======
                                     var wholeImages = jsonObj.query.pages[key].images;
                                     var temp;
                                     urlImg=[];
@@ -352,20 +296,89 @@
                                     srcImg=[];
                                   getLink(urlImg,ctr);
                              }
-
                       document.body.appendChild(script);
                                      
               });
->>>>>>> origin/master
                        
               function getLink(arr,ind)
               {
                   if(ind==urlImg.length)
                   {
+                     x=0;
                      alert(srcImg);
-                     return;
+                     document.body.removeChild(scripta);
+                     // code to show the images extracted
+//                     var con1,con2,con3;
+//                     var newDiv = document.createElement("div"); 
+//                     newDiv.class="container";
+//                     con1+="<br>";
+//                     var newDiv2=document.createElement("div");
+//                     newDiv2.id="myCarousel";
+//                     newDiv2.class="carousel slide";
+//                     newDiv2.data-ride="carousel";
+//                     newDiv.appendChild(newDiv2);
+//                     con1+="<div id=\"myCarousel\" class=\"carousel slide\" data-ride=\"carousel\"><ol class=\"carousel-indicators\"><li data-target=\"#myCarousel\" data-slide-to=\"0\" class=\"active\"></li>";
+//                             while(x<srcImg.length){
+//                            con1+= "<li data-target=\"#myCarousel\" data-slide-to=\""+x+"\"></li>";
+//                            x++;
+//                             }
+//                      con1+="</ol>";
+
+//    
+//                      con2="<div class=\"carousel-inner\" role=\"listbox\"><div class=\"item active\">";
+//                               x=0;
+//                                while(x<srcImg.length){
+//                              con2+="<img src=\""+srcImg[i]+"\" width=\"100\" height=\"55\">";
+//                              x++;
+//                                }
+//                           con2+="</div></div>";
+
+//                         
+
+//                      con3="<a class=\"left carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"prev\"><span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span><span class=\"sr-only\">Previous</span></a><a class=\"right carousel-control\" href=\"#myCarousel\" role=\"button\" data-slide=\"next\"><span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span><span class=\"sr-only\">Next</span></a></div></div>";
+//                      var content=con1+con2+con3;
+//                      var newContent = document.createTextNode(content); 
+//                     newDiv.appendChild(newContent);
+                        
+//                     document.body.appendChild(newDiv);
+          var newDiv=document.createElement("div");
+          document.body.appendChild(newDiv);
+          var indd=0;
+          printImage(newDiv,indd);
+          
+          function printImage(newDiv,indd){
+           if(indd==srcImg.length)
+           {
+               return;
+           }
+           try{
+           var elem = document.createElement("img");
+           elem.setAttribute("src", srcImg[indd]);
+           elem.setAttribute("height", "55");
+           elem.setAttribute("width", "100");
+           elem.onload = function() {
+                                        indd++;
+                                        printImage(newDiv,indd);
+                                };
+           newDiv.appendChild(elem);
+         }catch(ex){
+                   indd++;
+                   printImage(newDiv,indd);
+         }
+          
+          }
+//     } 
+   var fc = newDiv.firstChild;
+    while( fc ) {
+       newDiv.removeChild( fc );
+       fc = newDiv.firstChild;
+    }
+              
+     return;
                   }
-                  
+                  if(ind!=0){
+                      document.body.removeChild(scripta);
+                  }
                              var img;
                            // for(var i=0;i<urlImg.length;i++){
                                  img=arr[ind];
@@ -376,9 +389,11 @@
                                         getLink(urlImg,ind);
                                 };
                                      window.linkOfImage = function (obj) {
-                                        for (var i in obj.query.pages) {
-                                                  key2 = i;
-                                        }
+                                         
+                                                for (var i in obj.query.pages) {
+                                                     key2 = i;
+                                                }
+                                        
                                        srcImg[ind] =obj.query.pages[key2].imageinfo[0].url;
                                        ind++;
                                         
@@ -386,7 +401,8 @@
                                 document.body.appendChild(scripta);
                                 
                                  //genScript(img,i);
-                       //  }         //end for      
+                       //  }         //end for
+                             
             }  // function end
 //              function genScript(img,i)
 //              {
@@ -401,7 +417,6 @@
 //                                document.body.appendChild(scripta);
 //              }
               // Preparing content for the infowindow
-
               function getString(obj)
               {
                  var str="<div class=\"container\"><table class=\"table table-hover\"><tbody>";
@@ -414,7 +429,6 @@
                  str+="</tbody></table></div>";
                  return str;
               }
-
               // calling the feature layer for the address service
               function locate(str) {
                   var address = {
@@ -424,11 +438,8 @@
                       address: address,
                       outFields: ["*"]
                   };
-
                   locator.addressToLocations(options); // send request to locator class
-                  //alert("hi");
               }
-
               // function for concersion ex. sri lanka will become Sri_Lanka
               function ucFirstAllWords(str) {
                   var pieces = str.split(" ");
@@ -443,11 +454,8 @@
               function matchTemplates (wikiContent) {
                               return wikiContent.match(/{{[^]*?({{[^{}]*?}}[^]*?)*}}/g) || [];
               }
-
               // another infocontent extractor
-
             function anotherMatchTemplate(wikiContent){
-
                           var x = wikiContent.indexOf("Infobox"); // starting condition
                           
                           var x1 = wikiContent.charAt(x);
@@ -455,9 +463,7 @@
                           var sPatt = mplace1.replace("_", " ");
                           var cond = "'''" + sPatt + "'''";
                           var y = wikiContent.indexOf(cond); // storping condition
-
                           var y1 = wikiContent.charAt(y);
-
                           var sub = wikiContent.substring(x, y); ; // extracted string
                           
                           return sub;
@@ -482,7 +488,6 @@
                      }
                      return template;
                  }
-
               // function for enter event
               function keyCode(e) {
                   if (e.keyCode == 13 || e.keyCode == "13") { // single word text ex. gurgaon
@@ -500,12 +505,10 @@
                      
                       url = "http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&format=json&titles=" + mplace1 + "&rvsection=0&callback=jsonCallback";
                       //alert(url);
-
                       // apending script file
                       var script = document.createElement("script");
                       script.setAttribute("src", url);
                       script.setAttribute("type", "text/javascript");
-
                       window.jsonCallback = function (jsonObj) {
                           // use JSON object here
                           //alert(jsonObj);
@@ -524,12 +527,9 @@
                               return;
                              }
                           
-
                         //////////////// Method for parsing infobox ///////////
-
                           var wholeContent = jsonObj.query.pages[key].revisions[0]['*']; // whole content extracted
                           var my_JSON_object_string = JSON.stringify(wholeContent);
-
                           var res = 0;
                           var res = my_JSON_object_string.search(/lat/i); // searching for latitude
                           //alert(res);
@@ -551,7 +551,6 @@
                                       } // end if
                                } // end for
                               //alert(infoboxContent);
-
                               var params, i, pair;
                           // unexpected wiki content with }}}} type of symbols in their content   
                              var len=infoboxContent.length;
@@ -585,19 +584,15 @@
                                //alert(infobox);
                                
                                locate(place1); // try locating
-                               
                           }
-
                       }
                       // append the script in body
                       document.body.appendChild(script);
-
                       } else {
                       if (e.keyCode == 37 || e.keyCode == "37" || e.keyCode == 39 || e.keyCode == "39") {
                           return false;
                       }
                   }
-
               }
           });
 </script>
