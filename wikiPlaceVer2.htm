@@ -207,7 +207,10 @@
               var urlImg=[];
               var infobox = [];
               var key = 0;
+              var key2=0;
               var srcImg=[];
+              var scripta;
+              var ctr=0;
              
               // locator class
               locator = new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
@@ -290,8 +293,12 @@
                       script.setAttribute("src", urlAllLinks);
                       script.setAttribute("type", "text/javascript");
                       
+
+                               
+
                              //imagesJsonCallback function for the processing of images extracted
                              window.imagesJsonCallback = function (jsonObj) {
+<<<<<<< HEAD
                                     wholeImages = jsonObj.query.pages[key].images;
                                     //var temp;
                                     ano=0;
@@ -333,9 +340,72 @@
                                                      document.body.appendChild(scripta);
                                                   }
                                       }
+=======
+                                    var wholeImages = jsonObj.query.pages[key].images;
+                                    var temp;
+                                    urlImg=[];
+                                    for(var i=0;i<wholeImages.length;i++)
+                                    {
+                                       urlImg[i]="http://en.wikipedia.org/w/api.php?action=query&titles="+wholeImages[i].title+"&prop=imageinfo&iiprop=url&format=json&callback=linkOfImage";
+                                    }
+                                    ctr=0;
+                                    srcImg=[];
+                                  getLink(urlImg,ctr);
+                             }
+
+                      document.body.appendChild(script);
+                                     
+              });
+>>>>>>> origin/master
                        
-              
-              
+              function getLink(arr,ind)
+              {
+                  if(ind==urlImg.length)
+                  {
+                     alert(srcImg);
+                     document.body.removeChild(scripta);
+                     return;
+                  }
+                  if(ind!=0){
+                      document.body.removeChild(scripta);
+                  }
+                             var img;
+                           // for(var i=0;i<urlImg.length;i++){
+                                 img=arr[ind];
+                                 scripta = document.createElement("script");
+                                 scripta.setAttribute("src", img);
+                                 scripta.setAttribute("type", "text/javascript");
+                                 scripta.onload = function() {
+                                        getLink(urlImg,ind);
+                                };
+                                     window.linkOfImage = function (obj) {
+                                         
+                                                for (var i in obj.query.pages) {
+                                                     key2 = i;
+                                                }
+                                        
+                                       srcImg[ind] =obj.query.pages[key2].imageinfo[0].url;
+                                       ind++;
+                                        
+                                }   // end window
+                                document.body.appendChild(scripta);
+                                
+                                 //genScript(img,i);
+                       //  }         //end for
+                             
+            }  // function end
+//              function genScript(img,i)
+//              {
+//                  var scripta = document.createElement("script");
+//                                 scripta.setAttribute("src", img);
+//                                 scripta.setAttribute("type", "text/javascript");
+//                                     window.linkOfImage = function (obj) {
+//                                        
+//                                       srcImg[i] =obj.query.pages[-1].imageinfo[0].url;
+//                                        
+//                                }   // end window
+//                                document.body.appendChild(scripta);
+//              }
               // Preparing content for the infowindow
 
               function getString(obj)
@@ -528,8 +598,7 @@
                       // append the script in body
                       document.body.appendChild(script);
 
-
-                  } else {
+                      } else {
                       if (e.keyCode == 37 || e.keyCode == "37" || e.keyCode == 39 || e.keyCode == "39") {
                           return false;
                       }
